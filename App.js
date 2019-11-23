@@ -1,12 +1,13 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
+import { createAppContainer } from "react-navigation";
+import AppNavigator from "./screens/HomeScreen";
+import HomeScreen from "./screens/HomeScreen";
+
+const AppContainer = createAppContainer(AppNavigator);
 
 export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App + BOSS.js toew start working on your app!</Text>
-    </View>
-  );
+  return <HomeScreen />;
 }
 
 const styles = StyleSheet.create({
