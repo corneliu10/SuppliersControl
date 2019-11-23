@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "SupplierTracking",
-    "slug": "ReactTest",
+    "name": "Firebase Login Template",
+    "slug": "firebase-login-template",
     "privacy": "public",
     "sdkVersion": "35.0.0",
     "platforms": [

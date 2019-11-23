@@ -16,6 +16,8 @@ class DataManager {
     measurementId: "G-QKWR6R1JCQ"
   };
 
+  user = null;
+
   constructor() {
     // Initialize Firebase
     if (!firebase.apps.length) {
@@ -36,7 +38,10 @@ class DataManager {
       .database()
       .ref("/requests/")
       .on("child_added", snapshot => {
-        callback({ data: snapshot.val(), key: snapshot.key });
+        const data = snapshot.val();
+        if (data.status === "WAITING") {
+          callback({ data: snapshot.val(), key: snapshot.key });
+        }
       });
   }
 
@@ -44,7 +49,25 @@ class DataManager {
     firebase
       .database()
       .ref("/requests/")
-      .off("child_added");
+      .off("child_added", callback);
+  }
+
+  listenOffers(callback) {
+    firebase
+      .database()
+      .ref("/offers/")
+      .on("child_added", snapshot => {
+        if (snapshot.val().supplier_id === this.user.uid) {
+          callback(snapshot.val());
+        }
+      });
+  }
+
+  removeListenOffers(callback) {
+    firebase
+      .database()
+      .ref("/offersnpm/")
+      .off("child_added", callback);
   }
 
   async readRequests() {
@@ -55,19 +78,13 @@ class DataManager {
     return snapshot;
   }
 
-  writeSupplierRequest(data) {
-    const suppliersPath = "/suppliers_requests/";
-    const suppliersRef = firebase.database().ref(suppliersPath);
-
-    suppliersRef.push(data);
-  }
-
-  listenToSuppliersRequest() {
+  updateRequestStatus(status, requestId) {
+    const path = "/requests/" + requestId + "/";
     firebase
       .database()
-      .ref("/request/")
-      .on("child_added", snapshot => {
-        console.log(snapshot);
+      .ref(path)
+      .update({
+        status
       });
   }
 

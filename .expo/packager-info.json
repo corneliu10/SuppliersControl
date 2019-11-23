@@ -1,9 +1,9 @@
 {
   "devToolsPort": 19002,
-  "expoServerPort": 19000,
-  "packagerPort": 19001,
-  "packagerPid": 61837,
-  "expoServerNgrokUrl": "https://yt-wxt.corneliu-dcv.supplierscontrol.exp.direct",
-  "packagerNgrokUrl": "https://packager.yt-wxt.corneliu-dcv.supplierscontrol.exp.direct",
-  "ngrokPid": 61848
+  "expoServerPort": null,
+  "packagerPort": null,
+  "packagerPid": null,
+  "expoServerNgrokUrl": "https://sx-gcx.corneliu-dcv.supplierscontrol.exp.direct",
+  "packagerNgrokUrl": "https://packager.sx-gcx.corneliu-dcv.supplierscontrol.exp.direct",
+  "ngrokPid": 73369
 }

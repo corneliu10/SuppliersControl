@@ -35,8 +35,11 @@ export default class RequestsList extends Component {
   }
 
   addRequest = ({ data, key }) => {
+    const { requests } = this.state;
+    requests.push({ data, key });
+    requests.sort((r1, r2) => r2.data.timestamp - r1.data.timestamp);
     this.setState({
-      requests: [...this.state.requests, { data, key }],
+      requests,
       isLoading: false
     });
   };
@@ -53,14 +56,21 @@ export default class RequestsList extends Component {
     });
 
     const { selectedRequest } = this.state;
-    console.log(selectedRequest);
+    const supplier_id = _dataManager.user.uid;
+
+    // _dataManager.updateRequestStatus("accepted", selectedRequest.key);
     _dataManager.writeOfferRequest({
       estimate_arrival: ETA,
       price,
       request_id: selectedRequest.key,
       status: "in_progress",
-      timestamp: new Date().getTime()
+      timestamp: new Date().getTime(),
+      supplier_id
     });
+
+    let { requests } = this.state;
+    requests = requests.filter(r => r.key !== selectedRequest.key);
+    this.setState({ requests });
   };
 
   timeConverter = UNIX_timestamp => {
@@ -100,8 +110,14 @@ export default class RequestsList extends Component {
               {requests.map((req, i) => {
                 return (
                   <ListItem thumbnail key={i}>
+                    <Left>
+                      <Thumbnail
+                        square
+                        source={require("../assets/emag.png")}
+                      />
+                    </Left>
                     <Body>
-                      <Text>Request {i}</Text>
+                      <Text>{req.data.company}</Text>
                       <Text note numberOfLines={1}>
                         {this.timeConverter(req.data.timestamp)}
                       </Text>
@@ -113,7 +129,7 @@ export default class RequestsList extends Component {
                           this.setState({ visible: true, selectedRequest: req })
                         }
                       >
-                        <Text>View</Text>
+                        <Text>View Details</Text>
                       </Button>
                     </Right>
                   </ListItem>

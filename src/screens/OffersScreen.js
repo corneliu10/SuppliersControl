@@ -1,12 +1,12 @@
-import React from "react";
+import React, { memo } from "react";
 import { View, Text, StyleSheet } from "react-native";
-import RequestsList from "../components/RequestsList";
+import OffersList from "../components/OffersList";
 
-class HomeScreen extends React.Component {
+class OffersScreen extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <RequestsList />
+        <OffersList />
       </View>
     );
   }
@@ -18,4 +18,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default HomeScreen;
+export default memo(OffersScreen);

@@ -1,6 +1,6 @@
-import React from "react";
+import React, { memo } from "react";
 import { View, Text, StyleSheet } from "react-native";
-import TabsExample from "../components/TabsExample";
+import InfoTabs from "../components/InfoTabs";
 
 class InfoScreen extends React.Component {
   static navigationOptions = {
@@ -10,10 +10,9 @@ class InfoScreen extends React.Component {
 
   render() {
     const { navigation } = this.props;
-    console.log("CompanyID", navigation.getParam("companyId"));
     return (
       <View style={styles.container}>
-        <TabsExample />
+        <InfoTabs />
       </View>
     );
   }
@@ -25,4 +24,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default InfoScreen;
+export default memo(InfoScreen);
