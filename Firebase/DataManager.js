@@ -81,7 +81,7 @@ class DataManager {
     // Write the new post's data simultaneously in the posts list and the user's post list.
     let updates = {};
     updates["/" + offersPath + "/" + offersKey] = data;
-    updates["/" + offersPath + "/" + offersKey]["id"] = offersKey;
+    updates["/" + offersPath + "/" + offersKey]["offer_id"] = offersKey;
 
     return firebase
       .database()

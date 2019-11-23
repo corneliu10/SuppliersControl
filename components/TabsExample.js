@@ -7,10 +7,10 @@ export default class TabsExample extends Component {
     return (
       <Container>
         <Tabs>
-          <Tab heading="Tab1">
+          <Tab heading="Requests">
             <RequestsScreen />
           </Tab>
-          <Tab heading="Tab2">
+          <Tab heading="Offers">
             <RequestsScreen />
           </Tab>
         </Tabs>
