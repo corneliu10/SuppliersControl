@@ -1,13 +1,9 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { createAppContainer } from "react-navigation";
-import AppNavigator from "./screens/HomeScreen";
-import HomeScreen from "./screens/HomeScreen";
-
-const AppContainer = createAppContainer(AppNavigator);
+import AppContainer from "./routes.js";
 
 export default function App() {
-  return <HomeScreen />;
+  return <AppContainer />;
 }
 
 const styles = StyleSheet.create({
