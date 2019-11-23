@@ -31,12 +31,28 @@ class DataManager {
     return DataManager._instance;
   }
 
-  async readSuppliersRequest() {
+  listenRequests(callback) {
+    firebase
+      .database()
+      .ref("/requests/")
+      .on("child_added", snapshot => {
+        callback({ data: snapshot.val(), key: snapshot.key });
+      });
+  }
+
+  removeListenRequests(callback) {
+    firebase
+      .database()
+      .ref("/requests/")
+      .off("child_added");
+  }
+
+  async readRequests() {
     const snapshot = await firebase
       .database()
-      .ref("/suppliers_requests/")
+      .ref("/requests/")
       .once("value");
-    console.log(snapshot);
+    return snapshot;
   }
 
   writeSupplierRequest(data) {

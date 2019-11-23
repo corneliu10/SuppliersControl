@@ -1,22 +1,30 @@
 import React from "react";
-import { View, Text } from "react-native";
-import RequestsList from "../components/RequestsList";
-import DataManager from "../Firebase/DataManager";
+import { View, Text, StyleSheet } from "react-native";
+import CompaniesList from "../components/CompaniesList";
 
 class HomeScreen extends React.Component {
-  async componentDidMount() {
-    // _dataManager = DataManager.getInstance();
-    // await _dataManager.readSuppliersRequest();
-    // _dataManager.writeOfferRequest({ test: "a" });
-  }
+  static navigationOptions = {
+    title: "Home"
+    /* No more header config here! */
+  };
+
+  onHandleShowRequests = companyId => {
+    this.props.navigation.navigate("Info", { companyId });
+  };
 
   render() {
     return (
-      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-        {/* <RequestsLists /> */}
+      <View style={styles.container}>
+        <CompaniesList handleShowRequests={this.onHandleShowRequests} />
       </View>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1
+  }
+});
 
 export default HomeScreen;
