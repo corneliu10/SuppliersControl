@@ -10,6 +10,7 @@ import { Dimensions, StyleSheet } from "react-native";
 import { View, Text, Icon, Input } from "native-base";
 import { TextInput, Button, List } from "react-native-paper";
 import NumericInput from "react-native-numeric-input";
+import Star from "react-native-star-view";
 
 import ProductsList from "./ProductsList";
 import { timeConverter } from "../core/utils";
@@ -34,6 +35,10 @@ modalStyles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginTop: 12
+  },
+  starStyle: {
+    width: 100,
+    height: 20
   }
 });
 
@@ -84,6 +89,12 @@ class OfferModal extends React.Component {
             <Text style={{ marginTop: -5, marginBottom: 2 }}>
               Status: <Text style={statusStyle}>{offer.status}</Text>
             </Text>
+            {offer.status === "TERMINATED" && offer.review ? (
+              <Star
+                score={offer.review ? offer.review : 0}
+                style={modalStyles.starStyle}
+              />
+            ) : null}
             <TextInput
               label="Price ($)"
               mode="outlined"
@@ -101,22 +112,32 @@ class OfferModal extends React.Component {
               style={[modalStyles.textBox, { marginBottom: 4 }]}
             />
             <ProductsList products={offer.products} />
-            <List.Subheader>Add Delay (hours)</List.Subheader>
-            <NumericInput
-              value={this.state.delay}
-              onChange={delay => this.setState({ delay })}
-              minValue={0}
-              totalWidth={240}
-              totalHeight={50}
-              iconSize={25}
-              step={1}
-              valueType="real"
-              rounded
-              textColor="red"
-              iconStyle={{ color: "white" }}
-              rightButtonBackgroundColor="red"
-              leftButtonBackgroundColor="red"
-            />
+            {offer.status !== "TERMINATED" ? (
+              <View>
+                <List.Subheader>Add Delay (hours)</List.Subheader>
+                <NumericInput
+                  value={this.state.delay}
+                  onChange={delay => this.setState({ delay })}
+                  minValue={0}
+                  totalWidth={240}
+                  totalHeight={50}
+                  iconSize={25}
+                  step={1}
+                  valueType="real"
+                  rounded
+                  editable={offer.status !== "TERMINATED"}
+                  textColor="red"
+                  iconStyle={{ color: "white" }}
+                  rightButtonBackgroundColor="red"
+                  leftButtonBackgroundColor="red"
+                />
+              </View>
+            ) : offer.delay > 0 ? (
+              <List.Subheader>
+                Delay (hours):{" "}
+                <Text style={{ color: "red" }}>{offer.delay}</Text>
+              </List.Subheader>
+            ) : null}
           </View>
         </ModalContent>
         <ModalFooter>

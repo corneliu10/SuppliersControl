@@ -51,11 +51,12 @@ export default class OffersList extends Component {
     });
   };
 
-  updateOffer = ({ offer_id, status }) => {
+  updateOffer = ({ offer_id, status, review }) => {
     let { offers } = this.state;
     const idx = offers.findIndex(offer => offer.offer_id === offer_id);
     if (idx >= 0) {
       offers[idx].status = status;
+      offers[idx].review = review;
       this.setState({ offers });
     }
   };
@@ -109,7 +110,9 @@ export default class OffersList extends Component {
               <List>
                 {offers.map((offer, i) => {
                   let statusStyle = this.getStatusStyle(offer);
-
+                  if (offer.status === "DELETED") {
+                    return null;
+                  }
                   return (
                     <ListItem thumbnail key={i}>
                       <Left>
