@@ -45,3 +45,11 @@ export const timeConverter = UNIX_timestamp => {
     date + " " + month + " " + year + " " + hour + ":" + min + ":" + sec;
   return time;
 };
+
+export const getCompanyImage = companyName => {
+  if (companyName === "METRO-SYSTEMS") {
+    return require("../assets/metro.jpeg");
+  }
+
+  return require("../assets/emag.png");
+};

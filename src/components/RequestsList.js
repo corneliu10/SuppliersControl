@@ -14,6 +14,8 @@ import {
 } from "native-base";
 import DataManager from "../firebase/DataManager";
 import RequestModal from "./RequestModal";
+import { getCompanyImage, timeConverter } from "../core/utils";
+import { PacmanIndicator } from "react-native-indicators";
 
 export default class RequestsList extends Component {
   _dataManager = null;
@@ -59,13 +61,17 @@ export default class RequestsList extends Component {
     const supplier_id = _dataManager.user.uid;
 
     // _dataManager.updateRequestStatus("accepted", selectedRequest.key);
+    const timestamp = Math.floor(Date.now() / 1000);
     _dataManager.writeOfferRequest({
-      estimate_arrival: ETA,
+      estimate_arrival: timestamp + ETA * 3600,
       price,
       request_id: selectedRequest.key,
-      status: "in_progress",
-      timestamp: new Date().getTime(),
-      supplier_id
+      status: "WAITING",
+      timestamp: timestamp,
+      supplier_id,
+      company: selectedRequest.data.company,
+      products: selectedRequest.data.products,
+      delay: 0
     });
 
     let { requests } = this.state;
@@ -73,39 +79,12 @@ export default class RequestsList extends Component {
     this.setState({ requests });
   };
 
-  timeConverter = UNIX_timestamp => {
-    var a = new Date(UNIX_timestamp * 1000);
-    var months = [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec"
-    ];
-    var year = a.getFullYear();
-    var month = months[a.getMonth()];
-    var date = a.getDate();
-    var hour = a.getHours();
-    var min = a.getMinutes();
-    var sec = a.getSeconds();
-    var time =
-      date + " " + month + " " + year + " " + hour + ":" + min + ":" + sec;
-    return time;
-  };
-
   render() {
     const { requests, isLoading, visible } = this.state;
     return (
       <Container>
-        <Content>
-          {!isLoading ? (
+        {!isLoading ? (
+          <Content>
             <List>
               {requests.map((req, i) => {
                 return (
@@ -113,13 +92,13 @@ export default class RequestsList extends Component {
                     <Left>
                       <Thumbnail
                         square
-                        source={require("../assets/emag.png")}
+                        source={getCompanyImage(req.data.company)}
                       />
                     </Left>
                     <Body>
                       <Text>{req.data.company}</Text>
                       <Text note numberOfLines={1}>
-                        {this.timeConverter(req.data.timestamp)}
+                        {timeConverter(req.data.timestamp)}
                       </Text>
                     </Body>
                     <Right>
@@ -136,16 +115,18 @@ export default class RequestsList extends Component {
                 );
               })}
             </List>
-          ) : (
-            <Spinner color="blue" />
-          )}
-          <RequestModal
-            visible={visible}
-            onChangeVisible={this.onChangeVisible}
-            onMakeOffer={this.onMakeOffer}
-            request={this.state.selectedRequest}
-          />
-        </Content>
+            <RequestModal
+              visible={visible}
+              onChangeVisible={this.onChangeVisible}
+              onMakeOffer={this.onMakeOffer}
+              request={this.state.selectedRequest}
+            />
+          </Content>
+        ) : (
+          <Content contentContainerStyle={styles.content}>
+            <PacmanIndicator color="#600EE6" size={100} />
+          </Content>
+        )}
       </Container>
     );
   }

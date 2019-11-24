@@ -49,7 +49,7 @@ const LoginScreen = ({ navigation }) => {
 
       <Logo />
 
-      <Header>Welcome back.</Header>
+      <Header>Welcome</Header>
 
       <TextInput
         label="Email"

@@ -8,11 +8,9 @@ import Paragraph from "../components/Paragraph";
 const HomeScreen = ({ navigation }) => (
   <Background>
     <Logo />
-    <Header>Firebase Login</Header>
+    <Header>Stocks Made Easy</Header>
 
-    <Paragraph>
-      This template supports Firebase authorization out of the box.
-    </Paragraph>
+    <Paragraph>Everything is under control</Paragraph>
     <Button mode="contained" onPress={() => navigation.navigate("LoginScreen")}>
       Login
     </Button>

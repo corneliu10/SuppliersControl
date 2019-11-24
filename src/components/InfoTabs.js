@@ -28,7 +28,7 @@ export default class InfoTabs extends Component {
           <Tab heading="Requests">
             <RequestsScreen />
           </Tab>
-          <Tab heading="Offers">
+          <Tab heading="My Offers">
             <OffersScreen />
           </Tab>
         </Tabs>

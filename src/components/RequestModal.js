@@ -6,19 +6,11 @@ import Modal, {
   ModalContent,
   ModalTitle
 } from "react-native-modals";
-import { Dimensions, StyleSheet } from "react-native";
-import {
-  View,
-  Text,
-  List,
-  ListItem,
-  Body,
-  Label,
-  Item,
-  Input
-} from "native-base";
+import { Dimensions, StyleSheet, KeyboardAvoidingView } from "react-native";
+import { View } from "native-base";
 import ProductsList from "./ProductsList";
 import { TextInput } from "react-native-paper";
+import { timeConverter } from "../core/utils";
 
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
@@ -30,7 +22,8 @@ modalStyles = StyleSheet.create({
     // height: screenHeight - 200
   },
   textBox: {
-    marginTop: 8
+    marginTop: 8,
+    marginBottom: 8
   },
   productList: {
     alignItems: "center",
@@ -40,8 +33,8 @@ modalStyles = StyleSheet.create({
 
 class RequestModal extends React.Component {
   state = {
-    price: "1", // TODO
-    ETA: "1"
+    price: null, // TODO
+    ETA: null
   };
 
   onChangeText = value => {
@@ -64,17 +57,20 @@ class RequestModal extends React.Component {
         modalAnimation={new ScaleAnimation({})}
         style={styles.container}
       >
-        <ModalTitle title={request.data.company} />
+        <ModalTitle
+          title={
+            request.data.company + " - " + timeConverter(request.data.timestamp)
+          }
+        />
         <ModalContent style={modalStyles.content}>
           <View style={modalStyles.container}>
-            <ProductsList products={request.data.products} />
             <TextInput
-              label="Price"
+              label="Price ($)"
               mode="outlined"
               theme="dark"
               value={this.state.price}
               onChangeText={this.onChangeText}
-              style={modalStyles.textBox}
+              style={{ marginTop: 4 }}
             />
             <TextInput
               label="Estimate Time Arrival (hours)"
@@ -84,10 +80,11 @@ class RequestModal extends React.Component {
               onChangeText={this.onChangeETA}
               style={modalStyles.textBox}
             />
+            <ProductsList products={request.data.products} />
           </View>
         </ModalContent>
         <ModalFooter>
-          <ModalButton text="DECLINE" onPress={() => onChangeVisible(false)} />
+          <ModalButton text="CANCEL" onPress={() => onChangeVisible(false)} />
           <ModalButton
             text="MAKE OFFER"
             onPress={() =>

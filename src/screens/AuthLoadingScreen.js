@@ -6,6 +6,7 @@ import Background from "../components/Background";
 import { theme } from "../core/theme";
 import { FIREBASE_CONFIG } from "../core/config";
 import DataManager from "../firebase/DataManager";
+import { PacmanIndicator } from "react-native-indicators";
 
 // Initialize Firebase
 firebase.initializeApp(FIREBASE_CONFIG);
@@ -28,7 +29,7 @@ const AuthLoadingScreen = ({ navigation }) => {
 
   return (
     <Background>
-      <ActivityIndicator size="large" color={theme.colors.primary} />
+      <PacmanIndicator color="#600EE6" size={100} />
     </Background>
   );
 };

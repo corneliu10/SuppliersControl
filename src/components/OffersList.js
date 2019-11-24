@@ -1,5 +1,5 @@
-import React, { Component } from "react";
 import { StyleSheet } from "react-native";
+import React, { Component } from "react";
 import {
   Container,
   Content,
@@ -11,9 +11,12 @@ import {
   Body,
   Right,
   Button,
-  Spinner
+  View
 } from "native-base";
 import DataManager from "../firebase/DataManager";
+import { timeConverter, getCompanyImage } from "../core/utils";
+import OfferModal from "./OfferModal";
+import { PacmanIndicator } from "react-native-indicators";
 
 export default class OffersList extends Component {
   _dataManager = null;
@@ -28,6 +31,7 @@ export default class OffersList extends Component {
   async componentDidMount() {
     _dataManager = DataManager.getInstance();
     _dataManager.listenOffers(this.addOffer);
+    _dataManager.listenOffersUpdates(this.updateOffer);
     setTimeout(() => {
       this.setState({ isLoading: false });
     }, 4000);
@@ -37,18 +41,20 @@ export default class OffersList extends Component {
     _dataManager.removeListenRequests(this.addRequest);
   }
 
-  addOffer = ({
-    estimate_arrival,
-    offer_id,
-    price,
-    request_id,
-    status,
-    timestamp
-  }) => {
+  addOffer = data => {
     this.setState({
-      offers: [...this.state.offers, { price, status, timestamp }],
+      offers: [...this.state.offers, data],
       isLoading: false
     });
+  };
+
+  updateOffer = ({ offer_id, status }) => {
+    let { offers } = this.state;
+    const idx = offers.findIndex(offer => offer.offer_id === offer_id);
+    if (idx >= 0) {
+      offers[idx].status = status;
+      this.setState({ offers });
+    }
   };
 
   onChangeVisible = visible => {
@@ -57,42 +63,57 @@ export default class OffersList extends Component {
     });
   };
 
-  onMakeOffer = (price, ETA) => {
-    this.setState({
-      visible: false
-    });
+  onSubmitDelay = delay => {
+    _dataManager.updateOffer({ delay }, this.state.selectedOffer.offer_id);
+    this.onChangeVisible(false);
+  };
 
-    const { selectedRequest } = this.state;
-    console.log(selectedRequest);
-    _dataManager.writeOfferRequest({
-      estimate_arrival: ETA,
-      price,
-      request_id: selectedRequest.key,
-      status: "in_progress",
-      timestamp: new Date().getTime()
-    });
+  onDeleteOffer = () => {
+    _dataManager.updateOffer(
+      { status: "DELETED" },
+      this.state.selectedOffer.offer_id
+    );
+    this.onChangeVisible(false);
   };
 
   render() {
     const { offers, isLoading, visible } = this.state;
     return (
       <Container>
-        <Content>
-          {!isLoading ? (
+        {!isLoading ? (
+          <Content>
             <List>
               {offers.map((offer, i) => {
-                const statusStyle =
-                  offer.status === "in_progress"
-                    ? styles.inProgress
-                    : styles.accepted;
+                let statusStyle = styles.waiting;
+                switch (offer.status) {
+                  case "WAITING":
+                    statusStyle = styles.waiting;
+                    break;
+
+                  case "ACCEPTED":
+                    statusStyle = styles.accepted;
+                    break;
+
+                  case "DECLINED":
+                    statusStyle = styles.declined;
+                    break;
+
+                  case "DELETED":
+                    return null;
+                }
 
                 return (
                   <ListItem thumbnail key={i}>
+                    <Left>
+                      <Thumbnail
+                        square
+                        source={getCompanyImage(offer.company)}
+                      />
+                    </Left>
                     <Body>
-                      <Text style={statusStyle}>Offer {i}</Text>
+                      <Text style={statusStyle}>{offer.company}</Text>
                       <Text note numberOfLines={1}>
-                        {"asd"}
-                        {/* {this.timeConverter(req.data.timestamp)} */}
+                        {timeConverter(offer.timestamp)}
                       </Text>
                     </Body>
                     <Right>
@@ -105,33 +126,46 @@ export default class OffersList extends Component {
                           })
                         }
                       >
-                        <Text>View</Text>
+                        <Text>View Details</Text>
                       </Button>
                     </Right>
                   </ListItem>
                 );
               })}
             </List>
-          ) : (
-            <Spinner color="orange" />
-          )}
-          {/* <RequestModal
-            visible={visible}
-            onChangeVisible={this.onChangeVisible}
-            onMakeOffer={this.onMakeOffer}
-            request={this.state.selectedRequest}
-          /> */}
-        </Content>
+            {this.state.selectedOffer ? (
+              <OfferModal
+                visible={visible}
+                onChangeVisible={this.onChangeVisible}
+                onDeleteOffer={this.onDeleteOffer}
+                onSubmitDelay={this.onSubmitDelay}
+                offer={this.state.selectedOffer}
+              />
+            ) : null}
+          </Content>
+        ) : (
+          <Content contentContainerStyle={styles.content}>
+            <PacmanIndicator color="#600EE6" size={100} />
+          </Content>
+        )}
       </Container>
     );
   }
 }
 
 styles = StyleSheet.create({
-  inProgress: {
+  waiting: {
     color: "orange"
   },
   accepted: {
     color: "green"
+  },
+  declined: {
+    color: "red"
+  },
+  content: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center"
   }
 });

@@ -63,10 +63,21 @@ class DataManager {
       });
   }
 
+  listenOffersUpdates(callback) {
+    firebase
+      .database()
+      .ref("/offers/")
+      .on("child_changed", snapshot => {
+        if (snapshot.val().supplier_id === this.user.uid) {
+          callback(snapshot.val());
+        }
+      });
+  }
+
   removeListenOffers(callback) {
     firebase
       .database()
-      .ref("/offersnpm/")
+      .ref("/offers/")
       .off("child_added", callback);
   }
 
@@ -78,13 +89,13 @@ class DataManager {
     return snapshot;
   }
 
-  updateRequestStatus(status, requestId) {
-    const path = "/requests/" + requestId + "/";
+  updateOffer(newOffer, offer_id) {
+    const path = "/offers/" + offer_id + "/";
     firebase
       .database()
       .ref(path)
       .update({
-        status
+        ...newOffer
       });
   }
 
