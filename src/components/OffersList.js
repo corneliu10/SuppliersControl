@@ -79,6 +79,26 @@ export default class OffersList extends Component {
     this.onChangeVisible(false);
   };
 
+  getStatusStyle = offer => {
+    switch (offer.status) {
+      case "WAITING":
+        return styles.waiting;
+
+      case "ACCEPTED":
+        return styles.accepted;
+
+      case "DECLINED":
+        return styles.declined;
+
+      case "TERMINATED":
+        return styles.terminated;
+
+      case "DELETED":
+        return null;
+    }
+    return styles.waiting;
+  };
+
   render() {
     const { offers, isLoading, visible } = this.state;
     return (
@@ -88,23 +108,7 @@ export default class OffersList extends Component {
             <Content>
               <List>
                 {offers.map((offer, i) => {
-                  let statusStyle = styles.waiting;
-                  switch (offer.status) {
-                    case "WAITING":
-                      statusStyle = styles.waiting;
-                      break;
-
-                    case "ACCEPTED":
-                      statusStyle = styles.accepted;
-                      break;
-
-                    case "DECLINED":
-                      statusStyle = styles.declined;
-                      break;
-
-                    case "DELETED":
-                      return null;
-                  }
+                  let statusStyle = this.getStatusStyle(offer);
 
                   return (
                     <ListItem thumbnail key={i}>
@@ -144,6 +148,7 @@ export default class OffersList extends Component {
                   onDeleteOffer={this.onDeleteOffer}
                   onSubmitDelay={this.onSubmitDelay}
                   offer={this.state.selectedOffer}
+                  statusStyle={this.getStatusStyle(this.state.selectedOffer)}
                 />
               ) : null}
             </Content>
@@ -171,6 +176,9 @@ styles = StyleSheet.create({
   },
   declined: {
     color: "red"
+  },
+  terminated: {
+    color: "blue"
   },
   content: {
     flex: 1,

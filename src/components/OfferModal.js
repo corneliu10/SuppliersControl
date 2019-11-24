@@ -7,7 +7,7 @@ import Modal, {
   ModalTitle
 } from "react-native-modals";
 import { Dimensions, StyleSheet } from "react-native";
-import { View } from "native-base";
+import { View, Text, Icon, Input } from "native-base";
 import { TextInput, Button, List } from "react-native-paper";
 import NumericInput from "react-native-numeric-input";
 
@@ -63,7 +63,8 @@ class OfferModal extends React.Component {
       onChangeVisible,
       onDeleteOffer,
       onSubmitDelay,
-      offer
+      offer,
+      statusStyle
     } = this.props;
     if (offer === null) {
       return null;
@@ -80,8 +81,11 @@ class OfferModal extends React.Component {
         />
         <ModalContent style={modalStyles.content}>
           <View style={modalStyles.container}>
+            <Text style={{ marginTop: -5, marginBottom: 2 }}>
+              Status: <Text style={statusStyle}>{offer.status}</Text>
+            </Text>
             <TextInput
-              label="Price"
+              label="Price ($)"
               mode="outlined"
               disabled
               theme="dark"
@@ -89,7 +93,7 @@ class OfferModal extends React.Component {
               style={modalStyles.textBox}
             />
             <TextInput
-              label="Estimate Time Arrival (hours)"
+              label="Estimate Time Arrival"
               mode="outlined"
               theme="dark"
               disabled
@@ -97,7 +101,7 @@ class OfferModal extends React.Component {
               style={[modalStyles.textBox, { marginBottom: 4 }]}
             />
             <ProductsList products={offer.products} />
-            <List.Subheader>Add Delay</List.Subheader>
+            <List.Subheader>Add Delay (hours)</List.Subheader>
             <NumericInput
               value={this.state.delay}
               onChange={delay => this.setState({ delay })}
