@@ -34,15 +34,19 @@ modalStyles = StyleSheet.create({
 class RequestModal extends React.Component {
   state = {
     price: null, // TODO
-    ETA: null
+    ETA: null,
+    isPriceError: false,
+    isETAError: false
   };
 
   onChangeText = value => {
-    this.setState({ price: value });
+    const isNum = value === "" ? true : /^\d+$/.test(value);
+    this.setState({ price: value, isPriceError: !isNum });
   };
 
   onChangeETA = ETA => {
-    this.setState({ ETA });
+    const isNum = ETA === "" ? true : /^\d+$/.test(ETA);
+    this.setState({ ETA, isETAError: !isNum });
   };
 
   render() {
@@ -68,6 +72,7 @@ class RequestModal extends React.Component {
               label="Price ($)"
               mode="outlined"
               theme="dark"
+              error={this.state.isPriceError}
               value={this.state.price}
               onChangeText={this.onChangeText}
               style={{ marginTop: 4 }}
@@ -76,6 +81,7 @@ class RequestModal extends React.Component {
               label="Estimate Time Arrival (hours)"
               mode="outlined"
               theme="dark"
+              error={this.state.isETAError}
               value={this.state.ETA}
               onChangeText={this.onChangeETA}
               style={modalStyles.textBox}
@@ -87,12 +93,21 @@ class RequestModal extends React.Component {
           <ModalButton text="CANCEL" onPress={() => onChangeVisible(false)} />
           <ModalButton
             text="MAKE OFFER"
-            onPress={() =>
-              onMakeOffer(
-                parseInt(this.state.price, 10),
-                parseInt(this.state.ETA, 10)
-              )
-            }
+            onPress={() => {
+              if (
+                !this.state.isPriceError &&
+                !this.state.isETAError &&
+                this.state.price !== "" &&
+                this.state.ETA !== "" &&
+                this.state.price !== null &&
+                this.state.ETA !== null
+              ) {
+                onMakeOffer(
+                  parseInt(this.state.price, 10),
+                  parseInt(this.state.ETA, 10)
+                );
+              }
+            }}
           />
         </ModalFooter>
       </Modal>

@@ -42,8 +42,11 @@ export default class OffersList extends Component {
   }
 
   addOffer = data => {
+    const { offers } = this.state;
+    offers.push(data);
+    offers.sort((r1, r2) => r2.timestamp - r1.timestamp);
     this.setState({
-      offers: [...this.state.offers, data],
+      offers,
       isLoading: false
     });
   };
@@ -81,68 +84,74 @@ export default class OffersList extends Component {
     return (
       <Container>
         {!isLoading ? (
-          <Content>
-            <List>
-              {offers.map((offer, i) => {
-                let statusStyle = styles.waiting;
-                switch (offer.status) {
-                  case "WAITING":
-                    statusStyle = styles.waiting;
-                    break;
+          offers.length !== 0 ? (
+            <Content>
+              <List>
+                {offers.map((offer, i) => {
+                  let statusStyle = styles.waiting;
+                  switch (offer.status) {
+                    case "WAITING":
+                      statusStyle = styles.waiting;
+                      break;
 
-                  case "ACCEPTED":
-                    statusStyle = styles.accepted;
-                    break;
+                    case "ACCEPTED":
+                      statusStyle = styles.accepted;
+                      break;
 
-                  case "DECLINED":
-                    statusStyle = styles.declined;
-                    break;
+                    case "DECLINED":
+                      statusStyle = styles.declined;
+                      break;
 
-                  case "DELETED":
-                    return null;
-                }
+                    case "DELETED":
+                      return null;
+                  }
 
-                return (
-                  <ListItem thumbnail key={i}>
-                    <Left>
-                      <Thumbnail
-                        square
-                        source={getCompanyImage(offer.company)}
-                      />
-                    </Left>
-                    <Body>
-                      <Text style={statusStyle}>{offer.company}</Text>
-                      <Text note numberOfLines={1}>
-                        {timeConverter(offer.timestamp)}
-                      </Text>
-                    </Body>
-                    <Right>
-                      <Button
-                        transparent
-                        onPress={() =>
-                          this.setState({
-                            visible: true,
-                            selectedOffer: offer
-                          })
-                        }
-                      >
-                        <Text>View Details</Text>
-                      </Button>
-                    </Right>
-                  </ListItem>
-                );
-              })}
-            </List>
-            {this.state.selectedOffer ? (
-              <OfferModal
-                visible={visible}
-                onChangeVisible={this.onChangeVisible}
-                onDeleteOffer={this.onDeleteOffer}
-                onSubmitDelay={this.onSubmitDelay}
-                offer={this.state.selectedOffer}
-              />
-            ) : null}
-          </Content>
+                  return (
+                    <ListItem thumbnail key={i}>
+                      <Left>
+                        <Thumbnail
+                          square
+                          source={getCompanyImage(offer.company)}
+                        />
+                      </Left>
+                      <Body>
+                        <Text style={statusStyle}>{offer.company}</Text>
+                        <Text note numberOfLines={1}>
+                          {timeConverter(offer.timestamp)}
+                        </Text>
+                      </Body>
+                      <Right>
+                        <Button
+                          transparent
+                          onPress={() =>
+                            this.setState({
+                              visible: true,
+                              selectedOffer: offer
+                            })
+                          }
+                        >
+                          <Text>View Details</Text>
+                        </Button>
+                      </Right>
+                    </ListItem>
+                  );
+                })}
+              </List>
+              {this.state.selectedOffer ? (
+                <OfferModal
+                  visible={visible}
+                  onChangeVisible={this.onChangeVisible}
+                  onDeleteOffer={this.onDeleteOffer}
+                  onSubmitDelay={this.onSubmitDelay}
+                  offer={this.state.selectedOffer}
+                />
+              ) : null}
+            </Content>
+          ) : (
+            <Content contentContainerStyle={styles.content}>
+              <Text>You don't have any recents offers!</Text>
+            </Content>
+          )
         ) : (
           <Content contentContainerStyle={styles.content}>
             <PacmanIndicator color="#600EE6" size={100} />
