@@ -7,7 +7,8 @@ import {
   Title,
   Tab,
   Tabs,
-  View
+  View,
+  Right
 } from "native-base";
 import RequestsScreen from "../screens/RequestsScreen";
 import OffersScreen from "../screens/OffersScreen";
@@ -17,12 +18,20 @@ import { logoutUser } from "../api/auth-api";
 
 export default class InfoTabs extends Component {
   render() {
+    const { navigation } = this.props;
     return (
       <Container>
         <Header>
           <Left>
             <Button onPress={() => logoutUser()}>Logout</Button>
           </Left>
+          {/* <Right>
+            <Button
+              onPress={() => navigation.navigate("HistoryScreen")}
+            >
+              History
+            </Button>
+          </Right> */}
         </Header>
         <Tabs>
           <Tab heading="Requests">

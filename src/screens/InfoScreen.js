@@ -12,7 +12,7 @@ class InfoScreen extends React.Component {
     const { navigation } = this.props;
     return (
       <View style={styles.container}>
-        <InfoTabs />
+        <InfoTabs navigation={navigation} />
       </View>
     );
   }

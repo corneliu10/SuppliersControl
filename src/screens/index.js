@@ -7,3 +7,4 @@ export { default as AuthLoadingScreen } from "./AuthLoadingScreen";
 export { default as InfoScreen } from "./InfoScreen";
 export { default as RequestsScreen } from "./RequestsScreen";
 export { default as OffersScreen } from "./OffersScreen";
+export { default as HistoryScreen } from "./HistoryScreen";

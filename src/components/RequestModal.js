@@ -49,6 +49,15 @@ class RequestModal extends React.Component {
     this.setState({ ETA, isETAError: !isNum });
   };
 
+  clear = () => {
+    this.setState({
+      price: null, // TODO
+      ETA: null,
+      isPriceError: false,
+      isETAError: false
+    });
+  };
+
   render() {
     const { visible, onChangeVisible, onMakeOffer, request } = this.props;
     if (request === null) {

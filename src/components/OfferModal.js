@@ -112,7 +112,9 @@ class OfferModal extends React.Component {
               style={[modalStyles.textBox, { marginBottom: 4 }]}
             />
             <ProductsList products={offer.products} />
-            {offer.status !== "TERMINATED" ? (
+            {offer.status !== "TERMINATED" &&
+            offer.status !== "DECLINED" &&
+            offer.status !== "NOTARRIVED" ? (
               <View>
                 <List.Subheader>Add Delay (hours)</List.Subheader>
                 <NumericInput

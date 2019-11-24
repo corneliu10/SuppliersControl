@@ -11,14 +11,14 @@ import {
   Body,
   Right,
   Button,
-  Icon
+  View
 } from "native-base";
 import DataManager from "../firebase/DataManager";
 import { timeConverter, getCompanyImage } from "../core/utils";
 import OfferModal from "./OfferModal";
 import { PacmanIndicator } from "react-native-indicators";
 
-export default class OffersList extends Component {
+export default class HistoryList extends Component {
   _dataManager = null;
 
   state = {
@@ -38,7 +38,6 @@ export default class OffersList extends Component {
   }
 
   componentWillUnmount() {
-    console.log("OffersList");
     _dataManager.removeOffersRequest(this.addRequest);
   }
 
@@ -89,7 +88,6 @@ export default class OffersList extends Component {
       case "ACCEPTED":
         return styles.accepted;
 
-      case "NOTARRIVED":
       case "DECLINED":
         return styles.declined;
 
@@ -112,7 +110,7 @@ export default class OffersList extends Component {
               <List>
                 {offers.map((offer, i) => {
                   let statusStyle = this.getStatusStyle(offer);
-                  if (offer.status === "DELETED") {
+                  if (offer.status === "TERMINATED") {
                     return null;
                   }
                   return (
@@ -131,20 +129,15 @@ export default class OffersList extends Component {
                       </Body>
                       <Right>
                         <Button
+                          transparent
                           onPress={() =>
                             this.setState({
                               visible: true,
                               selectedOffer: offer
                             })
                           }
-                          iconRight
-                          transparent={offer.status !== "NOTARRIVED"}
-                          danger={offer.status === "NOTARRIVED"}
                         >
                           <Text>View Details</Text>
-                          {offer.status === "NOTARRIVED" ? (
-                            <Icon active name="bug" />
-                          ) : null}
                         </Button>
                       </Right>
                     </ListItem>
